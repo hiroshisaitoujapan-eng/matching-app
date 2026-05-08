@@ -29,10 +29,24 @@ export default function RegisterPage() {
 
     setLoading(true);
 
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
-      setError("登録に失敗しました。このメールアドレスはすでに使用されている可能性があります。");
+      setError(`登録エラー: ${error.message}`);
+      setLoading(false);
+      return;
+    }
+
+    // メール確認が必要な場合（data.user.identities が空配列 = 既存アドレス）
+    if (data.user && data.user.identities?.length === 0) {
+      setError("このメールアドレスはすでに登録されています。ログインページからサインインしてください。");
+      setLoading(false);
+      return;
+    }
+
+    // メール確認待ちの場合
+    if (data.user && !data.session) {
+      setError("確認メールを送信しました。メールボックスを確認して認証を完了してください。");
       setLoading(false);
       return;
     }

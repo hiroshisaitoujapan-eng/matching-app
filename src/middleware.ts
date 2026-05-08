@@ -45,6 +45,19 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/swipe", request.url));
   }
 
+  // プロフィール未設定チェック（/profile/setup 自体は除外）
+  if (user && !pathname.startsWith("/profile/setup")) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("is_profile_complete")
+      .eq("id", user.id)
+      .single();
+
+    if (profile && !profile.is_profile_complete) {
+      return NextResponse.redirect(new URL("/profile/setup", request.url));
+    }
+  }
+
   return supabaseResponse;
 }
 
