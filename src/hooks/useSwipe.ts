@@ -51,6 +51,18 @@ export function useSwipe() {
           .single();
 
         setNewMatch({ ...match, partner: partner ?? undefined });
+
+        // 相手にWeb Push通知を送信
+        await fetch("/api/push/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: targetId,
+            title: "マッチング成立！",
+            body: `${partner?.nickname ?? "誰か"} さんとマッチングしました`,
+            url: "/matches",
+          }),
+        });
       }
     }
 

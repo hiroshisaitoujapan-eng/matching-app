@@ -74,11 +74,34 @@ export function useChat(matchId: string) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setSending(false); return; }
 
-    await supabase.from("messages").insert({
-      match_id: matchId,
-      sender_id: user.id,
-      content: content.trim(),
-    });
+    const { data: inserted } = await supabase
+      .from("messages")
+      .insert({ match_id: matchId, sender_id: user.id, content: content.trim() })
+      .select()
+      .single();
+
+    if (inserted) {
+      // マッチ相手を取得してWeb Push通知を送信
+      const { data: match } = await supabase
+        .from("matches")
+        .select("user1_id, user2_id")
+        .eq("id", matchId)
+        .single();
+
+      if (match) {
+        const recipientId = match.user1_id === user.id ? match.user2_id : match.user1_id;
+        await fetch("/api/push/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: recipientId,
+            title: "新しいメッセージ",
+            body: content.trim().slice(0, 50),
+            url: `/chat/${matchId}`,
+          }),
+        });
+      }
+    }
 
     setSending(false);
   };

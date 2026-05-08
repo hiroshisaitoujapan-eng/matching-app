@@ -84,7 +84,7 @@
 | # | タスク | ステータス | ブランチ |
 |---|--------|----------|---------|
 | 6-1 | アプリ内トースト通知実装（マッチング・新着メッセージ） | 🟢 | feature/notification |
-| 6-2 | Web Push 通知実装（Service Worker + VAPID） | 🔴 | feature/notification |
+| 6-2 | Web Push 通知実装（Service Worker + VAPID） | 🟢 | feature/notification |
 
 ---
 
@@ -104,4 +104,4 @@
 |---|--------|----------|---------|
 | 8-1 | レスポンシブデザイン確認・調整 | 🟢 | - |
 | 8-2 | RLS ポリシー全体レビュー | 🟢 | - |
-| 8-3 | 本番環境（Vercel + Supabase）での動作確認 | 🔴 | - |
+| 8-3 | 本番環境（Vercel + Supabase）での動作確認 | ✅️ | - |

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
+import { usePushNotification } from "@/hooks/usePushNotification";
 import { ToastContainer } from "@/components/ui/Toast";
 import { createClient } from "@/lib/supabase/client";
 
@@ -13,6 +14,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const { user, signOut } = useAuth();
   const { toasts, showToast, removeToast } = useToast();
   const supabase = createClient();
+  usePushNotification();
 
   // マッチング・新着メッセージのRealtime通知
   useEffect(() => {
